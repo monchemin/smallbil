@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SmallBil</string>
+    <string name="title_stock">Stock</string>
+    <string name="title_dashboard">Home</string>
+    <string name="title_sale">Sale</string>
+    <string name="product_code_hint">code du produit</string>
+    <string name="title_scanner">Scanner</string>
+</resources>

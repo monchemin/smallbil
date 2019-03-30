@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/dash_navigation_dashboard"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_dashboard" />
+
+    <item
+        android:id="@+id/dash_to_sale_navigation"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_sale" />
+
+    <item
+        android:id="@+id/dash_to_prod_navigation"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/title_stock" />
+
+</menu>
