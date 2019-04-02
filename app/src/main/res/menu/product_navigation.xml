@@ -3,13 +3,12 @@
 
     <item
         android:id="@+id/prod_to_sale_navigation"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:icon="@drawable/ic_baseline_exit_to_app_24px"
+        android:title="@string/title_sale" />
 
     <item
         android:id="@+id/prod_to_dash_navigation"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_sale" />
-
+        android:title="@string/title_dashboard" />
 
 </menu>
