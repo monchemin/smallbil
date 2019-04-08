@@ -6,4 +6,7 @@
     <string name="product_code_hint">code du produit</string>
     <string name="title_scanner">Scanner</string>
     <string name="title_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -3,17 +3,21 @@
 
 
     <item
-        android:id="@+id/dash_to_prod_navigation"
-        android:icon="@drawable/ic_baseline_add_shopping_cart_24px"
-        android:title="@string/title_stock" />
+        android:id="@+id/dashboard_fragment"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_dashboard" />
 
     <item
-        android:id="@+id/dash_to_sale_navigation"
+        android:id="@+id/product_fragment"
+        android:icon="@drawable/ic_baseline_add_shopping_cart_24px"
+        android:title="@string/title_stock" />
+    <item
+        android:id="@+id/sale_fragment"
         android:icon="@drawable/ic_baseline_exit_to_app_24px"
         android:title="@string/title_sale" />
 
     <item
-        android:id="@+id/settings"
+        android:id="@+id/settings_fragment"
         android:icon="@drawable/ic_baseline_settings_applications_24px"
         android:title="@string/title_settings" />
 
