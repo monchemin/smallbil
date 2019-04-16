@@ -1,15 +1,20 @@
 package com.smallbil.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.Fragment;
+import android.widget.Toast;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import com.smallbil.R;
+
+import androidx.fragment.app.Fragment;
 
 
 /**
@@ -21,14 +26,9 @@ import com.smallbil.R;
  * create an instance of this fragment.
  */
 public class ScannerFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    MaterialButton scannerButton;
+    TextInputEditText codeText;
 
     private OnFragmentInteractionListener mListener;
 
@@ -36,20 +36,11 @@ public class ScannerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ScannerFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static ScannerFragment newInstance(String param1, String param2) {
         ScannerFragment fragment = new ScannerFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,17 +48,25 @@ public class ScannerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_scanner, container, false);
+        View view = inflater.inflate(R.layout.fragment_scanner, container, false);
+        codeText = view.findViewById(R.id.product_code_view);
+        scannerButton = view.findViewById(R.id.scanner_button);
+        scannerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -86,6 +85,7 @@ public class ScannerFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override
@@ -93,6 +93,10 @@ public class ScannerFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
+
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

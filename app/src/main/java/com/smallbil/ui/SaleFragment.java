@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
  * Use the {@link SaleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SaleFragment extends Fragment {
+public class SaleFragment extends Fragment implements ScannerFragment.OnFragmentInteractionListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,6 +60,7 @@ public class SaleFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -67,6 +68,11 @@ public class SaleFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sale, container, false);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 /*
     // TODO: Rename method, update argument and hook method into UI event
