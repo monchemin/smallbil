@@ -15,6 +15,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.smallbil.R;
+import com.smallbil.repository.AppDatabase;
 
 import androidx.fragment.app.Fragment;
 
@@ -31,10 +32,12 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
     private OnFragmentInteractionListener mListener;
     private TextInputEditText productCurrentQuantity, productCode;
     private MaterialButton scannerButton;
+    private AppDatabase db;
+
 
 
     public ProductFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -114,5 +117,9 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
     @Override
     public void onBarCodeRead(String barCode) {
         productCode.setText(barCode);
+    }
+
+    public void setDao(AppDatabase db) {
+        this.db = db;
     }
 }

@@ -16,4 +16,6 @@
     <string name="product_new_amount_hint">New Amount</string>
     <string name="product_name_hint">Name</string>
     <string name="add_product">Add Product</string>
+    <string name="database_name">smalldb</string>
+    <string name="scanner_prompt">Scanning</string>
 </resources>

@@ -7,18 +7,21 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.smallbil.R;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.smallbil.R;
+import com.smallbil.repository.AppDatabase;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.room.Room;
+
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
-    BarCodeRequest readCallBack;
     Fragment fragment = null;
+
+    AppDatabase db;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     break;
                 case R.id.product_fragment:
                     fragment = new ProductFragment();
+                    ((ProductFragment) fragment).setDao(db);
                     break;
                 case R.id.sale_fragment:
                     fragment = new SaleFragment();
@@ -49,15 +53,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loadFragment(new DashbordFragment());
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.dashboard_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        db = this.daoProvider();
+        loadFragment(new DashbordFragment());
     }
 
-
-
     private boolean loadFragment(Fragment fragment) {
-        //switching fragment
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -74,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             if(result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                //codeText.setText(result.getContents());
-                //this.readCallBack.onBarCodeRead(result.getContents());
                 if (this.fragment instanceof BarCodeRequest) {
                     BarCodeRequest bcr = (BarCodeRequest) this.fragment;
                     bcr.onBarCodeRead(result.getContents());
@@ -94,14 +94,19 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public void readBarCode() {
-        //this.readCallBack = readCallBack;
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
-        integrator.setPrompt("Scan a barcode");
+        integrator.setPrompt(getString(R.string.scanner_prompt));
         integrator.setCameraId(0);
         integrator.setBeepEnabled(true);
         integrator.setBarcodeImageEnabled(true);
         integrator.initiateScan();
+    }
+
+    private AppDatabase daoProvider() {
+        return Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, getString(R.string.database_name)).build();
+
     }
 
 }
