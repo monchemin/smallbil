@@ -16,6 +16,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.smallbil.R;
 import com.smallbil.repository.AppDatabase;
+import com.smallbil.repository.Product;
+import com.smallbil.service.ProductService;
 
 import androidx.fragment.app.Fragment;
 
@@ -30,18 +32,15 @@ import androidx.fragment.app.Fragment;
 public class ProductFragment extends Fragment implements BarCodeRequest  {
 
     private OnFragmentInteractionListener mListener;
-    private TextInputEditText productCurrentQuantity, productCode;
-    private MaterialButton scannerButton;
-    private AppDatabase db;
-
+    private TextInputEditText currentQuantity, code, name, currentAmount, newAmount, newQuantity, addQuantity;
+    private MaterialButton scannerButton, addButton;
+    private ProductService service;
 
 
     public ProductFragment() {
 
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static ProductFragment newInstance(String param1, String param2) {
         ProductFragment fragment = new ProductFragment();
         Bundle args = new Bundle();
@@ -59,18 +58,32 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_product, container, false);
-        productCurrentQuantity = view.findViewById(R.id.product_current_quantity);
-        productCode = view.findViewById(R.id.product_code_view);
+        currentQuantity = view.findViewById(R.id.product_current_quantity);
+        code = view.findViewById(R.id.product_code_view);
+        name = view.findViewById(R.id.product_name);
+        currentAmount = view.findViewById(R.id.product_current_amount);
+        currentQuantity = view.findViewById(R.id.product_current_quantity);
+        newAmount = view.findViewById(R.id.product_new_amount);
+        newQuantity = view.findViewById(R.id.product_new_quantity);
         scannerButton = view.findViewById(R.id.scanner_button);
-        productCurrentQuantity.setEnabled(false);
+        addButton = view.findViewById(R.id.add_product_button);
+        addQuantity = view.findViewById(R.id.product_add_quantity);
+        currentQuantity.setEnabled(false);
+        currentAmount.setEnabled(false);
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.readBarCode();
             }
         });
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upsert();
+            }
+        });
 
-        productCode.addTextChangedListener(new TextWatcher() {
+        code.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -79,6 +92,7 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Toast.makeText(getContext(), "Scanned: "+ s, Toast.LENGTH_LONG).show();
+                getProductByCode(s.toString());
             }
 
             @Override
@@ -113,13 +127,39 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
         mListener = null;
     }
 
-
     @Override
     public void onBarCodeRead(String barCode) {
-        productCode.setText(barCode);
+        code.setText(barCode);
     }
 
     public void setDao(AppDatabase db) {
-        this.db = db;
+        service = new ProductService(db);
     }
+
+    public void getProductByCode(String code) {
+       Product current = service.getProductByCode(code);
+       if (current != null) {
+           name.setText(current.name);
+       }
+    }
+
+    protected void upsert() {
+        String mcode = code.getText().toString();
+        String mname = name.getText().toString();
+        int quantity = 0;
+        double amount = 0;
+        try {
+            quantity =  Integer.parseInt(newQuantity.getText().toString());
+            amount = Double.parseDouble(newAmount.getText().toString());
+        } catch (NumberFormatException ex) {
+            newAmount.setHint("required");
+            addQuantity.setHint("required");
+        }
+
+      long a =  service.upsert(mcode, mname, quantity, amount);
+        Toast.makeText(getContext(), "retour: "+ a, Toast.LENGTH_LONG).show();
+    }
+
+
+
 }
