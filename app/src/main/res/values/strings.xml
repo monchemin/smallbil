@@ -18,4 +18,6 @@
     <string name="add_product">Add Product</string>
     <string name="database_name">smalldb</string>
     <string name="scanner_prompt">Scanning</string>
+    <string name="operation_success">Operation Done with success</string>
+    <string name="operation_failed">Operation With error</string>
 </resources>

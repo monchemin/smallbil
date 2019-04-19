@@ -19,7 +19,9 @@ import com.smallbil.repository.AppDatabase;
 import com.smallbil.repository.Product;
 import com.smallbil.service.ProductService;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -137,10 +139,20 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
     }
 
     public void getProductByCode(String code) {
-       Product current = service.getProductByCode(code);
-       if (current != null) {
-           name.setText(current.name);
-       }
+               service.getProductByCode(code).observe(this, new Observer<Product>() {
+                   @Override
+                   public void onChanged(@Nullable Product product) {
+                       if(product != null) {
+                           name.setText(product.name);
+                           currentAmount.setText(String.valueOf(product.amount));
+                           currentQuantity.setText(String.valueOf(product.amount));
+                           newAmount.setText(String.valueOf(product.amount));
+                           newQuantity.setText(String.valueOf(product.amount));
+                       }
+
+                   }
+               });
+
     }
 
     protected void upsert() {
@@ -156,8 +168,18 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             addQuantity.setHint("required");
         }
 
-      long a =  service.upsert(mcode, mname, quantity, amount);
-        Toast.makeText(getContext(), "retour: "+ a, Toast.LENGTH_LONG).show();
+      ProductService.InsertTask responseTask =  service.upsert(mcode, mname, quantity, amount);
+        responseTask.response = new ProductService.ServiceResponse() {
+            @Override
+            public void didFinish(Boolean result) {
+                if (result)
+                    Toast.makeText(getContext(), R.string.operation_success, Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+            }
+        };
+        responseTask.execute();
+
     }
 
 

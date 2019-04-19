@@ -1,14 +1,14 @@
 package com.smallbil.service;
 
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 import com.smallbil.repository.AppDatabase;
 import com.smallbil.repository.Product;
-import com.smallbil.repository.ProductDao;
 
-import java.util.concurrent.ExecutionException;
+import java.util.Enumeration;
+
+import androidx.lifecycle.LiveData;
 
 public class ProductService {
 
@@ -19,29 +19,13 @@ public class ProductService {
         this.db = db;
     }
 
-    @SuppressLint("StaticFieldLeak")
-    public long upsert(final String code, String name, int quantity, double amount) {
+
+    public InsertTask upsert(final String code, String name, int quantity, double amount) {
        final Product product = fillProduct(code, name, quantity, amount);
-       long rt = 0;
-        if(code != null) {
-             new AsyncTask<Void, Void, Long>() {
-                @Override
-                protected Long doInBackground(Void... voids) {
-                    if (getProductByCode(code).code == null) {
-                        return db.productDao().insertProduct(product);
-                    } else {
-                        return (long) db.productDao().updateProduct(product);
-                    }
-                }
-
-                @Override
-                protected void onPostExecute(Long aLong) {
-                    super.onPostExecute(aLong);
-                }
-
-            }.execute();
-        }
-        return rt;
+        boolean isNew = true;
+            if (getProductByCode(code).getValue() != null)
+                isNew = false;
+             return new InsertTask(product, isNew);
     }
 
     private Product fillProduct(String code, String name, int quantity, double amount) {
@@ -54,28 +38,44 @@ public class ProductService {
     }
 
 
-    @SuppressLint("StaticFieldLeak")
-    public Product getProductByCode(final String code){
-        Product rt = null;
-        try {
-            rt =  new AsyncTask<Void, Void, Product>() {
-                   @Override
-                   protected Product doInBackground(Void... voids) {
-                       return db.productDao().getProductByCode(code);
-                   }
-
-                @Override
-                protected void onPostExecute(Product product) {
-                    super.onPostExecute(product);
-                   if (product != null) System.out.println("nyemo : " + product.code);
-                }
-            }.execute().get();
-        } catch (ExecutionException e) {
-            System.out.println("nyemo : " + e.getMessage());
-        } catch (InterruptedException e) {
-            System.out.println("nyemo : " + e.getMessage());
-        }
-        return rt;
+    public LiveData<Product> getProductByCode(String code){
+        return db.productDao().getProductByCode(code);
     }
+
+    public interface ServiceResponse {
+        void didFinish(Boolean result);
+    }
+
+    public class InsertTask extends AsyncTask<Product, Void, Boolean> {
+        public ServiceResponse response = null;
+
+        private Product product;
+        private Boolean isNew;
+
+        public InsertTask(Product product, Boolean isNew) {
+           this.product = product;
+           this.isNew = isNew;
+        }
+
+        @Override
+        protected Boolean doInBackground(Product... products) {
+            if(this.product != null )
+            {
+                if (isNew)
+                    return db.productDao().insertProduct(this.product) > 0;
+                else
+                    return db.productDao().updateProduct(this.product) > 0;
+            }
+
+            else return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            response.didFinish(result);
+        }
+    }
+
 
 }
