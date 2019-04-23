@@ -3,7 +3,6 @@ package com.smallbil.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.smallbil.R;
 import com.smallbil.repository.AppDatabase;
 import com.smallbil.repository.Product;
@@ -72,6 +70,7 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
         addQuantity = view.findViewById(R.id.product_add_quantity);
         currentQuantity.setEnabled(false);
         currentAmount.setEnabled(false);
+        newQuantity.setEnabled(false);
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +94,53 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Toast.makeText(getContext(), "Scanned: "+ s, Toast.LENGTH_LONG).show();
                 getProductByCode(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        addQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    int v = Integer.parseInt(s.toString());
+                    int a = Integer.parseInt(currentQuantity.getText().toString());
+                    newQuantity.setText(String.valueOf(a + v));
+                } catch (NumberFormatException ex) {
+                    Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                }
+                catch (NullPointerException ex) {
+                    Toast.makeText(getContext(),R.string.operation_failed, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        newAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    Double.parseDouble(newAmount.getText().toString());
+                } catch (NumberFormatException ex) {
+                    Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -145,9 +191,9 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
                        if(product != null) {
                            name.setText(product.name);
                            currentAmount.setText(String.valueOf(product.amount));
-                           currentQuantity.setText(String.valueOf(product.amount));
                            newAmount.setText(String.valueOf(product.amount));
-                           newQuantity.setText(String.valueOf(product.amount));
+                           currentQuantity.setText(String.valueOf(product.quantity));
+                           newQuantity.setText(String.valueOf(product.quantity));
                        }
 
                    }
@@ -163,23 +209,21 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
         try {
             quantity =  Integer.parseInt(newQuantity.getText().toString());
             amount = Double.parseDouble(newAmount.getText().toString());
+            ProductService.InsertTask responseTask =  service.upsert(mcode, mname, quantity, amount);
+            responseTask.response = new ProductService.ServiceResponse() {
+                @Override
+                public void didFinish(Boolean result) {
+                    if (result)
+                        Toast.makeText(getContext(), R.string.operation_success, Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                }
+            };
+            responseTask.execute();
         } catch (NumberFormatException ex) {
-            newAmount.setHint("required");
-            addQuantity.setHint("required");
+            Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
         }
-
-      ProductService.InsertTask responseTask =  service.upsert(mcode, mname, quantity, amount);
-        responseTask.response = new ProductService.ServiceResponse() {
-            @Override
-            public void didFinish(Boolean result) {
-                if (result)
-                    Toast.makeText(getContext(), R.string.operation_success, Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
-            }
-        };
-        responseTask.execute();
-
+        
     }
 
 
