@@ -11,27 +11,47 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/sale_floating_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="left"
+                android:layout_margin="0dp"
+                app:elevation="4dp"
+                app:srcCompat="@drawable/ic_baseline_search_24px"
+                app:layout_anchorGravity="top|right"
+                tools:ignore="VectorDrawableCompat" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/sale_current_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sale_current_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                app:icon="@drawable/ic_baseline_control_point_24px"
+                app:layout_constraintRight_toRightOf="parent" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/sale_product_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/recyclerview_product_list_item">
 

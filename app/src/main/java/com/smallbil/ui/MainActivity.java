@@ -1,7 +1,6 @@
 package com.smallbil.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -40,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     break;
                 case R.id.sale_fragment:
                     fragment = new SaleFragment();
+                    ((SaleFragment) fragment).setDao(db);
                     break;
                 case R.id.settings_fragment:
                     fragment = new SettingsFragment();
@@ -87,10 +87,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     public void readBarCode() {

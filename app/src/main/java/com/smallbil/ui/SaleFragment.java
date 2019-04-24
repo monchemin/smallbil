@@ -1,54 +1,50 @@
 package com.smallbil.ui;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.smallbil.R;
+import com.smallbil.adapters.ProductListAdapter;
+import com.smallbil.repository.AppDatabase;
+import com.smallbil.repository.Product;
+import com.smallbil.service.ProductService;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SaleFragment.OnFragmentInteractionListener} interface
+ * {@link BarCodeRequest} interface
  * to handle interaction events.
  * Use the {@link SaleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SaleFragment extends Fragment implements ScannerFragment.OnFragmentInteractionListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    //private OnFragmentInteractionListener mListener;
+public class SaleFragment extends Fragment implements BarCodeRequest {
+    private OnFragmentInteractionListener mListener;
+    private FloatingActionButton floatingActionButton;
+    private ProductService service;
+    private RecyclerView recyclerView;
+    private ProductListAdapter adapter;
+    private int i = 0;
 
     public SaleFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SaleFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
+
     public static SaleFragment newInstance(String param1, String param2) {
         SaleFragment fragment = new SaleFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,31 +52,37 @@ public class SaleFragment extends Fragment implements ScannerFragment.OnFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sale, container, false);
+        View view = inflater.inflate(R.layout.fragment_sale, container, false);
+
+        floatingActionButton = view.findViewById(R.id.sale_floating_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //mListener.readBarCode();
+                i++;
+                Toast.makeText(getContext(), ""+i, Toast.LENGTH_LONG).show();
+                Product p = new Product();
+                p.code = String.valueOf(i);
+                p.name = "name"+i;
+                p.amount = 1+i;
+                adapter.addProduct(p);
+            }
+        });
+
+         recyclerView = view.findViewById(R.id.sale_product_list);
+         adapter = new ProductListAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        return view;
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
-    }
-/*
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -98,19 +100,27 @@ public class SaleFragment extends Fragment implements ScannerFragment.OnFragment
         super.onDetach();
         mListener = null;
     }
-*/
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     *
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    } */
+
+    public void setDao(AppDatabase db) {
+        service = new ProductService(db);
+    }
+
+    @Override
+    public void onBarCodeRead(String barCode) {
+        Toast.makeText(getContext(), barCode, Toast.LENGTH_LONG).show();
+        if(barCode != null){
+            service.getProductByCode(barCode).observe(this, new Observer<Product>() {
+                @Override
+                public void onChanged(@Nullable Product product) {
+                    if(product != null) {
+                        adapter.addProduct(product);
+                    }
+                    else {
+                        Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
+        }
+    }
 }
