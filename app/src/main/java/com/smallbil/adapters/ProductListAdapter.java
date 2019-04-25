@@ -1,13 +1,10 @@
 package com.smallbil.adapters;
 
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.smallbil.R;
 import com.smallbil.repository.Product;
 
@@ -21,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder> {
 
     private List<Product> productList = new ArrayList<>();
+    private View.OnClickListener mOnItemClickListener;
 
     @NonNull
     @Override
@@ -51,6 +49,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     public void addProduct(Product product) {
+        product.quantity = 1;
         productList.add(product);
         notifyDataSetChanged();
     }
@@ -58,6 +57,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public void updateList(int position, String quantity) {
        try {
            productList.get(position).quantity = Integer.parseInt(quantity);
+           notifyDataSetChanged();
        }
        catch (NumberFormatException ex) {
            productList.remove(position);
@@ -67,9 +67,27 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
        }
     }
 
-    class ProductListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public Product getItem(int position) {
+        return productList != null ? productList.get(position) : null;
+
+    }
+
+    public double getItemsAmount() {
+        if(productList == null) return 0;
+         double total = 0;
+         for(Product prod: productList) {
+             total += prod.amount*prod.quantity;
+         }
+         return total;
+    }
+
+    public void setOnItemClickListener(View.OnClickListener itemClickListener) {
+        mOnItemClickListener = itemClickListener;
+    }
+
+    class ProductListViewHolder extends RecyclerView.ViewHolder  {
         AppCompatTextView name, quantity, amount, total;
-        int position;
+
 
         public ProductListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,20 +98,17 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             amount.setEnabled(false);
             total.setEnabled(false);
             name.setEnabled(false);
-            quantity.setOnClickListener(this);
+            itemView.setTag(this);
+            itemView.setOnClickListener(mOnItemClickListener);
 
         }
 
         public void displayItem(Product product) {
             name.setText(product.name);
             amount.setText(String.valueOf(product.amount));
-            quantity.setText("1");
-            total.setText(String.valueOf(product.amount * Integer.parseInt(quantity.getText().toString())));
+            quantity.setText(String.valueOf(product.quantity));
+            total.setText(String.valueOf(product.amount * product.quantity));
         }
 
-        @Override
-        public void onClick(View v) {
-            this.position = getAdapterPosition();
-        }
     }
 }

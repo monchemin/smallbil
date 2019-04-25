@@ -20,4 +20,6 @@
     <string name="scanner_prompt">Scanning</string>
     <string name="operation_success">Operation Done with success</string>
     <string name="operation_failed">Operation With error</string>
+    <string name="total_amount">Total</string>
+    <string name="save">Save</string>
 </resources>
