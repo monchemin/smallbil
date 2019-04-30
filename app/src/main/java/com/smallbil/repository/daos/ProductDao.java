@@ -1,4 +1,6 @@
-package com.smallbil.repository;
+package com.smallbil.repository.daos;
+
+import com.smallbil.repository.entities.Product;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -14,7 +16,7 @@ public interface ProductDao {
     Long insertProduct(Product product);
 
     @Update
-    int updateProduct(Product product);
+    int updateProduct(Product... products);
 
     @Delete
     void deleteProduct(Product product);

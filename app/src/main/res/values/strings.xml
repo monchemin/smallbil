@@ -22,4 +22,8 @@
     <string name="operation_failed">Operation With error</string>
     <string name="total_amount">Total</string>
     <string name="save">Save</string>
+    <string name="not_number">Please enter number</string>
+    <string name="not_empty">Empty value not authorised</string>
+    <string name="not_stock">Empty stock</string>
+    <string name="less_stock">Insufficient quantity</string>
 </resources>

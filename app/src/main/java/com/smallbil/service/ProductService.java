@@ -4,9 +4,7 @@ package com.smallbil.service;
 import android.os.AsyncTask;
 
 import com.smallbil.repository.AppDatabase;
-import com.smallbil.repository.Product;
-
-import java.util.Enumeration;
+import com.smallbil.repository.entities.Product;
 
 import androidx.lifecycle.LiveData;
 

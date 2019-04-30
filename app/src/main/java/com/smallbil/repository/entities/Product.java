@@ -1,7 +1,8 @@
-package com.smallbil.repository;
+package com.smallbil.repository.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "products")
@@ -14,5 +15,8 @@ public class Product {
     public int quantity;
 
     public double amount;
+
+    @Ignore
+    public int saleQuantity;
 
 }

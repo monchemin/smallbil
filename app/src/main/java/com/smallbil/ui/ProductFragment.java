@@ -1,7 +1,6 @@
 package com.smallbil.ui;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,7 +13,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.smallbil.R;
 import com.smallbil.repository.AppDatabase;
-import com.smallbil.repository.Product;
+import com.smallbil.repository.entities.Product;
 import com.smallbil.service.ProductService;
 
 import androidx.annotation.Nullable;
@@ -112,13 +111,14 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
                     int v = Integer.parseInt(s.toString());
-                    int a = Integer.parseInt(currentQuantity.getText().toString());
+                    int a = 0;
+                    if(currentQuantity.getText() != null )  a = Integer.parseInt(currentQuantity.getText().toString());
                     newQuantity.setText(String.valueOf(a + v));
                 } catch (NumberFormatException ex) {
-                    Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.not_number, Toast.LENGTH_LONG).show();
                 }
                 catch (NullPointerException ex) {
-                    Toast.makeText(getContext(),R.string.operation_failed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),R.string.not_empty, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -138,8 +138,11 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
                     Double.parseDouble(newAmount.getText().toString());
-                } catch (NumberFormatException ex) {
-                    Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                } catch (NullPointerException ex) {
+                    Toast.makeText(getContext(), R.string.not_empty, Toast.LENGTH_LONG).show();
+                }
+                catch (NumberFormatException ex) {
+                    Toast.makeText(getContext(), R.string.not_number, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -189,6 +192,8 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
                            newAmount.setText(String.valueOf(product.amount));
                            currentQuantity.setText(String.valueOf(product.quantity));
                            newQuantity.setText(String.valueOf(product.quantity));
+                       } else {
+                           clearForm();
                        }
 
                    }
@@ -208,19 +213,29 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             responseTask.response = new ProductService.ServiceResponse() {
                 @Override
                 public void didFinish(Boolean result) {
-                    if (result)
+                    if (result) {
+                        clearForm();
                         Toast.makeText(getContext(), R.string.operation_success, Toast.LENGTH_LONG).show();
+                    }
                     else
                         Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
                 }
             };
             responseTask.execute();
         } catch (NumberFormatException ex) {
-            Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.not_number, Toast.LENGTH_LONG).show();
         }
         
     }
 
+    private void clearForm() {
+        name.setText("");
+        currentAmount.setText("0");
+        newAmount.setText("0");
+        currentQuantity.setText("0");
+        newQuantity.setText("0");
+        addQuantity.setText("0");
+    }
 
 
 }

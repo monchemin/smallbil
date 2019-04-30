@@ -13,8 +13,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.smallbil.R;
 import com.smallbil.adapters.ProductListAdapter;
 import com.smallbil.repository.AppDatabase;
-import com.smallbil.repository.Product;
+import com.smallbil.repository.entities.Product;
 import com.smallbil.service.ProductService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -37,6 +40,7 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
     private TextInputEditText name, quantity, total;
     private int i = 0;
     private int position;
+    private List<Product> productList = new ArrayList<>();
 
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override
@@ -78,13 +82,7 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
             @Override
             public void onClick(View v) {
                 mListener.readBarCode();
-                /*i++;
-                Toast.makeText(getContext(), ""+i, Toast.LENGTH_LONG).show();
-                Product p = new Product();
-                p.code = String.valueOf(i);
-                p.name = "name"+i;
-                p.amount = 1+i;
-                adapter.addProduct(p);*/
+
             }
         });
         name = view.findViewById(R.id.sale_current_name);
@@ -102,7 +100,7 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
         totalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                total.setText(String.valueOf(adapter.getItemsAmount()));
+                total.setText(String.valueOf(getItemsAmount()));
             }
         });
         RecyclerView recyclerView = view.findViewById(R.id.sale_product_list);
@@ -137,17 +135,16 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
     }
 
     private void loadItem() {
-
         Product item = adapter.getItem(position);
         if(item != null) {
             name.setText(item.name);
-            quantity.setText(String.valueOf(item.quantity));
+            quantity.setText(String.valueOf(item.saleQuantity));
         }
     }
 
     private void onItemChange() {
-
-            adapter.updateList(position, quantity.getText().toString());
+        if (quantity.getText() != null)
+            updateList(position, quantity.getText().toString());
     }
 
     @Override
@@ -157,15 +154,56 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
             service.getProductByCode(barCode).observe(this, new Observer<Product>() {
                 @Override
                 public void onChanged(@Nullable Product product) {
-                    if(product != null) {
-                        adapter.addProduct(product);
+                    if(product != null && product.quantity > 0) {
+                        addProduct(product);
                     }
                     else {
-                        Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.not_stock, Toast.LENGTH_LONG).show();
                     }
 
                 }
             });
         }
+    }
+
+    private void addProduct(Product product) {
+        product.saleQuantity = 1;
+        Boolean inList = false;
+        for(Product prod: productList) {
+            if (prod.code.equals(product.code)){
+                inList = true;
+                if (product.quantity > product.saleQuantity)
+                    prod.saleQuantity++;
+                else
+                    Toast.makeText(getContext(), R.string.less_stock, Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+        if(!inList) productList.add(product);
+        adapter.setProductList(productList);
+    }
+
+    private void updateList(int position, String quantity) {
+        try {
+            if(productList.get(position).quantity > Integer.parseInt(quantity))
+                productList.get(position).saleQuantity = Integer.parseInt(quantity);
+            else
+                Toast.makeText(getContext(), R.string.less_stock, Toast.LENGTH_LONG).show();
+        }
+        catch (NumberFormatException ex) {
+            productList.remove(position);
+        }
+        finally {
+           adapter.setProductList(productList);
+        }
+    }
+
+    private double getItemsAmount() {
+        if(productList == null) return 0;
+        double total = 0;
+        for(Product prod: productList) {
+            total += prod.amount*prod.saleQuantity;
+        }
+        return total;
     }
 }

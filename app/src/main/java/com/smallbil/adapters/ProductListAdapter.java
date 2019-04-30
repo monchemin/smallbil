@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.smallbil.R;
-import com.smallbil.repository.Product;
+import com.smallbil.repository.entities.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,37 +48,10 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         notifyDataSetChanged();
     }
 
-    public void addProduct(Product product) {
-        product.quantity = 1;
-        productList.add(product);
-        notifyDataSetChanged();
-    }
-
-    public void updateList(int position, String quantity) {
-       try {
-           productList.get(position).quantity = Integer.parseInt(quantity);
-           notifyDataSetChanged();
-       }
-       catch (NumberFormatException ex) {
-           productList.remove(position);
-       }
-       finally {
-           notifyDataSetChanged();
-       }
-    }
 
     public Product getItem(int position) {
         return productList != null ? productList.get(position) : null;
 
-    }
-
-    public double getItemsAmount() {
-        if(productList == null) return 0;
-         double total = 0;
-         for(Product prod: productList) {
-             total += prod.amount*prod.quantity;
-         }
-         return total;
     }
 
     public void setOnItemClickListener(View.OnClickListener itemClickListener) {
@@ -106,8 +79,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         public void displayItem(Product product) {
             name.setText(product.name);
             amount.setText(String.valueOf(product.amount));
-            quantity.setText(String.valueOf(product.quantity));
-            total.setText(String.valueOf(product.amount * product.quantity));
+            quantity.setText(String.valueOf(product.saleQuantity));
+            total.setText(String.valueOf(product.amount * product.saleQuantity));
         }
 
     }
