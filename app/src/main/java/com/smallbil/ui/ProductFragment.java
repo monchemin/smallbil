@@ -15,6 +15,7 @@ import com.smallbil.R;
 import com.smallbil.repository.AppDatabase;
 import com.smallbil.repository.entities.Product;
 import com.smallbil.service.ProductService;
+import com.smallbil.service.ServiceResponse;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -210,7 +211,7 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
             quantity =  Integer.parseInt(newQuantity.getText().toString());
             amount = Double.parseDouble(newAmount.getText().toString());
             ProductService.InsertTask responseTask =  service.upsert(mcode, mname, quantity, amount);
-            responseTask.response = new ProductService.ServiceResponse() {
+            responseTask.response = new ServiceResponse() {
                 @Override
                 public void didFinish(Boolean result) {
                     if (result) {

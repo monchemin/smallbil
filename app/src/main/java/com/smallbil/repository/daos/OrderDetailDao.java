@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 @Dao
 public interface OrderDetailDao {
@@ -15,5 +16,6 @@ public interface OrderDetailDao {
 
     @Query("Select * from orderdetails where orderNumber = :order")
     LiveData<OrderDetail> getOrderDetails(Order order);
+
 
 }

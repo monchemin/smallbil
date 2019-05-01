@@ -1,7 +1,6 @@
 package com.smallbil.repository;
 
 import com.smallbil.repository.daos.OrderDao;
-import com.smallbil.repository.daos.OrderDetailDao;
 import com.smallbil.repository.daos.ProductDao;
 import com.smallbil.repository.entities.Order;
 import com.smallbil.repository.entities.OrderDetail;
@@ -19,5 +18,4 @@ import androidx.room.RoomDatabase;
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ProductDao productDao();
     public abstract OrderDao orderDao();
-    public abstract OrderDetailDao orderDetailDao();
 }

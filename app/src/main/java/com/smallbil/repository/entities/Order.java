@@ -1,5 +1,7 @@
 package com.smallbil.repository.entities;
 
+import com.smallbil.utils.DateUtils;
+
 import java.util.Date;
 
 import androidx.annotation.NonNull;
@@ -10,5 +12,10 @@ import androidx.room.PrimaryKey;
 public class Order {
     @PrimaryKey @NonNull
     public String orderNumber;
-    public Date orderDate;
+    public String orderDate;
+
+    public Order(String orderNumber) {
+        this.orderNumber = orderNumber;
+        this.orderDate = DateUtils.toISO8601UTC(new Date());
+    }
 }

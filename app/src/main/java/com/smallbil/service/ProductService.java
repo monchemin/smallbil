@@ -40,9 +40,6 @@ public class ProductService {
         return db.productDao().getProductByCode(code);
     }
 
-    public interface ServiceResponse {
-        void didFinish(Boolean result);
-    }
 
     public class InsertTask extends AsyncTask<Product, Void, Boolean> {
         public ServiceResponse response = null;
@@ -50,7 +47,7 @@ public class ProductService {
         private Product product;
         private Boolean isNew;
 
-        public InsertTask(Product product, Boolean isNew) {
+        InsertTask(Product product, Boolean isNew) {
            this.product = product;
            this.isNew = isNew;
         }
