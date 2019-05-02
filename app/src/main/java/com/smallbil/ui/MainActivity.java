@@ -101,7 +101,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private AppDatabase daoProvider() {
         return Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, getString(R.string.database_name)).build();
+                AppDatabase.class, getString(R.string.database_name))
+                .fallbackToDestructiveMigration()
+                .build();
 
     }
 

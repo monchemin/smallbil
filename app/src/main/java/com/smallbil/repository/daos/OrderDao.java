@@ -37,4 +37,10 @@ public interface OrderDao {
     @Query("Select * from orderdetails where orderNumber = :orderNumber")
     LiveData<OrderDetail> getOrderDetails(String orderNumber);
 
+    @Query("SELECT * FROM orders")
+    LiveData<List<Order>> getOrders();
+
+    @Query("SELECT * FROM orderdetails")
+    LiveData<List<OrderDetail>> getOrderDetails();
+
 }

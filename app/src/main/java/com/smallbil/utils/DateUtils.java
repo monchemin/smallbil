@@ -3,6 +3,7 @@ package com.smallbil.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -27,5 +28,9 @@ public final class DateUtils {
         }
 
         return null;
+    }
+
+    public static String toISO(Date date) {
+        return "";
     }
 }

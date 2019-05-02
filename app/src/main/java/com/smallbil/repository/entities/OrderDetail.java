@@ -20,4 +20,11 @@ public class OrderDetail {
    public @NonNull String productCode;
    public @NonNull int quantityOrdered;
    public @NonNull double price;
+
+   public OrderDetail(String orderNumber, String productCode, int quantityOrdered, double price) {
+       this.orderNumber = orderNumber;
+       this.productCode = productCode;
+       this.quantityOrdered = quantityOrdered;
+       this.price = price;
+   }
 }

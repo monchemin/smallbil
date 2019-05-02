@@ -1,7 +1,9 @@
 package com.smallbil.ui;
 
 import android.content.Context;
+import android.icu.text.SymbolTable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.smallbil.R;
 import com.smallbil.adapters.ProductListAdapter;
 import com.smallbil.repository.AppDatabase;
+import com.smallbil.repository.entities.Order;
+import com.smallbil.repository.entities.OrderDetail;
 import com.smallbil.repository.entities.Product;
+import com.smallbil.service.OrderService;
 import com.smallbil.service.ProductService;
+import com.smallbil.service.ServiceResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +44,9 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
     private ProductService service;
     private ProductListAdapter adapter;
     private TextInputEditText name, quantity, total;
-    private int i = 0;
     private int position;
     private List<Product> productList = new ArrayList<>();
+    private AppDatabase db;
 
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override
@@ -49,15 +55,13 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
             position = viewHolder.getAdapterPosition();
             loadItem();
-            //Toast.makeText(getContext(), "You Clicked: " + position, Toast.LENGTH_SHORT).show();
         }
     };
+
 
     public SaleFragment() {
 
     }
-
-
 
     public static SaleFragment newInstance(String param1, String param2) {
         SaleFragment fragment = new SaleFragment();
@@ -103,6 +107,14 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
                 total.setText(String.valueOf(getItemsAmount()));
             }
         });
+
+        MaterialButton saveButton = view.findViewById(R.id.sale_btn_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSave();
+            }
+        });
         RecyclerView recyclerView = view.findViewById(R.id.sale_product_list);
          adapter = new ProductListAdapter();
          recyclerView.setAdapter(adapter);
@@ -131,6 +143,7 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
     }
 
     public void setDao(AppDatabase db) {
+        this.db = db;
         service = new ProductService(db);
     }
 
@@ -205,5 +218,47 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
             total += prod.amount*prod.saleQuantity;
         }
         return total;
+    }
+
+    private void doSave() {
+        OrderService orderService = new OrderService(db);
+        orderService.getOrders().observe(this, new Observer<List<Order>>() {
+            @Override
+            public void onChanged(List<Order> orders) {
+                Log.d("SMB", "order :" + orders.size());
+                for(Order or: orders) {
+                    Log.d("SMB", or.orderNumber + " : " + or.orderDate);
+                }
+            }
+        });
+
+        orderService.getDetails().observe(this, new Observer<List<OrderDetail>>() {
+            @Override
+            public void onChanged(List<OrderDetail> orderDetails) {
+                Log.d("SMB", "order detail :" + orderDetails.size());
+                for(OrderDetail or: orderDetails) {
+                    Log.d("SMB", or.orderNumber + " : " + or.productCode);
+                }
+            }
+        });
+
+        if (productList.size() == 0) {
+            Log.d("SMB", "list null");
+            return;
+        }
+
+       OrderService.WriteOrder writeOrder = orderService.write(productList);
+       writeOrder.setCallback(new ServiceResponse() {
+           @Override
+           public void didFinish(Boolean result) {
+               if (result) Toast.makeText(getContext(), R.string.operation_success, Toast.LENGTH_LONG).show();
+               else {
+                   productList.clear();
+                   adapter.setProductList(productList);
+                   Toast.makeText(getContext(), R.string.operation_failed, Toast.LENGTH_LONG).show();
+               }
+           }
+       });
+       writeOrder.execute();
     }
 }

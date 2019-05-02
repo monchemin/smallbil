@@ -2,6 +2,8 @@ package com.smallbil.repository.daos;
 
 import com.smallbil.repository.entities.Product;
 
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -17,6 +19,9 @@ public interface ProductDao {
 
     @Update
     int updateProduct(Product... products);
+
+    @Update
+    int updateProduct(List<Product> products);
 
     @Delete
     void deleteProduct(Product product);
