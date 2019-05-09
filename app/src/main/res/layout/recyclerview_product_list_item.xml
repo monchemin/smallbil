@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_min_vertical"
     android:orientation="horizontal">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/product_list_name"

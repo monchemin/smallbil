@@ -197,6 +197,7 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
     }
 
     private void updateList(int position, String quantity) {
+        if (productList.size() == 0 ) return;
         try {
             if(productList.get(position).quantity > Integer.parseInt(quantity))
                 productList.get(position).saleQuantity = Integer.parseInt(quantity);

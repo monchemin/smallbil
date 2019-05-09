@@ -17,7 +17,7 @@ import androidx.room.Update;
 public interface OrderDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Long[] insertOrder(Order... order);
+    Long insertOrder(Order order);
 
     @Update
     int updateOrder(Order order);
