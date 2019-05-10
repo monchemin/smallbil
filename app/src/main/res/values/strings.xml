@@ -26,4 +26,8 @@
     <string name="not_empty">Empty value not authorised</string>
     <string name="not_stock">Empty stock</string>
     <string name="less_stock">Insufficient quantity</string>
+    <string name="customer_customer_hint">Costumer Number</string>
+    <string name="red_threshold_hint">Red Threshold</string>
+    <string name="yellow_threshold_hint">Yellow Threshold</string>
+    <string name="activation_code_hint">Activation Code</string>
 </resources>
