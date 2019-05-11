@@ -39,7 +39,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * Use the {@link SaleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SaleFragment extends Fragment implements BarCodeRequest {
+public class SaleFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
     private ProductService service;
     private ProductListAdapter adapter;
@@ -141,7 +141,7 @@ public class SaleFragment extends Fragment implements BarCodeRequest {
         super.onDetach();
         mListener = null;
     }
-
+    @Override
     public void setDao(AppDatabase db) {
         this.db = db;
         service = new ProductService(db);

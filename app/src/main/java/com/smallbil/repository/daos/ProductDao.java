@@ -29,4 +29,7 @@ public interface ProductDao {
     @Query("Select * From products Where code = :mcode")
     LiveData<Product> getProductByCode(String mcode);
 
+    @Query("SELECT * FROM products WHERE quantity <= :threshold")
+    LiveData<List<Product>> getThesholdProduct(int threshold);
+
 }

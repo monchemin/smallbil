@@ -8,6 +8,8 @@ import com.smallbil.repository.entities.Product;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
+
 public class ProductService {
 
     AppDatabase db;
@@ -38,6 +40,10 @@ public class ProductService {
 
     public LiveData<Product> getProductByCode(String code){
         return db.productDao().getProductByCode(code);
+    }
+
+    public LiveData<List<Product>> getThresholdProduct(int threshold) {
+        return db.productDao().getThesholdProduct(threshold);
     }
 
 

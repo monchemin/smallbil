@@ -18,7 +18,7 @@ import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
-    Fragment fragment = null;
+    BaseFragment fragment = null;
 
     AppDatabase db;
 
@@ -32,14 +32,15 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
                 case R.id.dashboard_fragment:
                     fragment = new DashbordFragment();
+                    fragment.setDao(db);
                     break;
                 case R.id.product_fragment:
                     fragment = new ProductFragment();
-                    ((ProductFragment) fragment).setDao(db);
+                     fragment.setDao(db);
                     break;
                 case R.id.sale_fragment:
                     fragment = new SaleFragment();
-                    ((SaleFragment) fragment).setDao(db);
+                     fragment.setDao(db);
                     break;
                 case R.id.settings_fragment:
                     fragment = new SettingsFragment();
@@ -56,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.dashboard_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         db = this.daoProvider();
-        loadFragment(new DashbordFragment());
+        DashbordFragment dashBordFragment = new DashbordFragment();
+        dashBordFragment.setDao(db);
+        loadFragment(dashBordFragment);
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -76,16 +79,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             if(result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                if (this.fragment instanceof BarCodeRequest) {
-                    BarCodeRequest bcr = (BarCodeRequest) this.fragment;
-                    bcr.onBarCodeRead(result.getContents());
-                }
+                fragment.onBarCodeRead(result.getContents());
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 
 
     @Override

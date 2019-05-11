@@ -29,7 +29,7 @@ import androidx.lifecycle.Observer;
  * Use the {@link ProductFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProductFragment extends Fragment implements BarCodeRequest  {
+public class ProductFragment extends BaseFragment  {
 
     private OnFragmentInteractionListener mListener;
     private TextInputEditText currentQuantity, code, name, currentAmount, newAmount, newQuantity, addQuantity;
@@ -178,12 +178,12 @@ public class ProductFragment extends Fragment implements BarCodeRequest  {
     public void onBarCodeRead(String barCode) {
         code.setText(barCode);
     }
-
+    @Override
     public void setDao(AppDatabase db) {
         service = new ProductService(db);
     }
 
-    public void getProductByCode(String code) {
+    private void getProductByCode(String code) {
                service.getProductByCode(code).observe(this, new Observer<Product>() {
                    @Override
                    public void onChanged(@Nullable Product product) {

@@ -4,6 +4,7 @@ package com.smallbil.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.smallbil.R;
 import com.smallbil.repository.entities.Product;
@@ -15,20 +16,39 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder> {
+public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Product> productList = new ArrayList<>();
     private View.OnClickListener mOnItemClickListener;
 
     @NonNull
     @Override
-    public ProductListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.recyclerview_product_list_item, parent, false);
-        return  new ProductListViewHolder(itemView);
+        View itemView = null;
+
+        switch(viewType) {
+            case 0:
+                 itemView = inflater.inflate(R.layout.recyclerview_product_list_item, parent, false);
+                return  new ProductListViewHolder(itemView);
+            case 1:
+                 itemView = inflater.inflate(R.layout.recyclerview_threshold_list_item, parent, false);
+                 return new TresholdListViewHolder(itemView);
+        }
+        return null;
+
     }
 
     @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if(productList != null) {
+            Product prod = productList.get(position);
+            HolderDisplay holder1 = (HolderDisplay) holder;
+            holder1.displayItem(prod);
+        }
+    }
+
+
     public void onBindViewHolder(@NonNull ProductListViewHolder holder, int position) {
         if(productList != null) {
             Product cProduit = productList.get(position);
@@ -58,7 +78,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         mOnItemClickListener = itemClickListener;
     }
 
-    class ProductListViewHolder extends RecyclerView.ViewHolder  {
+    class ProductListViewHolder extends RecyclerView.ViewHolder implements HolderDisplay  {
         AppCompatTextView name, quantity, amount, total;
 
 
@@ -77,11 +97,37 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         }
 
         public void displayItem(Product product) {
+            System.out.println("SMB  sale" );
             name.setText(product.name);
             amount.setText(String.valueOf(product.amount));
             quantity.setText(String.valueOf(product.saleQuantity));
             total.setText(String.valueOf(product.amount * product.saleQuantity));
         }
 
+    }
+
+    class TresholdListViewHolder extends RecyclerView.ViewHolder implements HolderDisplay  {
+        AppCompatTextView name, quantity;
+
+
+        public TresholdListViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.product_list_name);
+            quantity = itemView.findViewById(R.id.product_list_quantity);
+            name.setEnabled(false);
+
+        }
+
+        public void displayItem(Product product) {
+            System.out.println("SMB  dash" );
+            name.setText(product.name);
+            quantity.setText(String.valueOf(product.quantity));
+
+        }
+
+    }
+
+    public interface HolderDisplay {
+        void displayItem(Product product);
     }
 }
