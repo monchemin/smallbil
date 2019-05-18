@@ -69,7 +69,7 @@ public class DashbordFragment extends BaseFragment {
         pieChart = view.findViewById(R.id.piechart);
 
         RecyclerView recyclerView = view.findViewById(R.id.threshold_product_list);
-        adapter = new ProductListAdapter();
+        adapter = new ProductListAdapter(1);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -78,11 +78,11 @@ public class DashbordFragment extends BaseFragment {
     }
 
     private void critacalProductChart(ArrayList<PieEntry> rawData) {
-        PieDataSet dataSet = new MyPieDataSet(rawData, getString(R.string.app_name));
+        PieDataSet dataSet = new MyPieDataSet(rawData, getString(R.string.threshold_legend));
         PieData data = new PieData();
         data.setDataSet(dataSet);
         data.setValueTextSize(13f);
-        data.setValueTextColor(Color.DKGRAY);
+        data.setValueTextColor(Color.WHITE);
 
         // In Percentage
         //data.setValueFormatter(new PercentFormatter());
@@ -100,7 +100,7 @@ public class DashbordFragment extends BaseFragment {
         pieChart.setTransparentCircleRadius(58f);
         pieChart.setEntryLabelColor(Color.WHITE);
         pieChart.setHoleRadius(58f);
-        pieChart.getLegend().setEnabled(false);
+        pieChart.getLegend().setEnabled(true);
         pieChart.setDrawEntryLabels(false);
         pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override

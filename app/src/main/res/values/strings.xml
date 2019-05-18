@@ -30,6 +30,10 @@
     <string name="customer_customer_hint">Costumer Number</string>
     <string name="red_threshold_hint">Red Threshold</string>
     <string name="yellow_threshold_hint">Yellow Threshold</string>
+    <string name="threshold_legend">Critical Stock</string>
+    <string name="day_account_hint">Day</string>
+    <string name="week_account_hint">Week</string>
+    <string name="month_account_hint">Month</string>
     <string name="activation_code_hint">Activation Code</string>
 
 </resources>

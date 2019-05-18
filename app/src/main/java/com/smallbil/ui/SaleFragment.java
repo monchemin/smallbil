@@ -116,7 +116,7 @@ public class SaleFragment extends BaseFragment {
             }
         });
         RecyclerView recyclerView = view.findViewById(R.id.sale_product_list);
-         adapter = new ProductListAdapter();
+         adapter = new ProductListAdapter(0);
          recyclerView.setAdapter(adapter);
          recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
          adapter.setOnItemClickListener(onItemClickListener);

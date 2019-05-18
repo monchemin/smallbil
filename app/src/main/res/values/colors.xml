@@ -3,7 +3,7 @@
     <color name="colorPrimary">@android:color/holo_orange_dark</color>
     <color name="colorPrimaryDark">@android:color/background_dark</color>
     <color name="colorAccent">#FFFF9800</color>
-    <color name="colorPrimaryLight">#64b5f6</color>
+    <color name="colorPrimaryLight">#F3D88F</color>
     <color name="colorAccentLight">#FFFF9800</color>
     <color name="colorTextPrimary">@android:color/background_dark</color>
     <color name="colorScreenBackground">#cccccc</color>

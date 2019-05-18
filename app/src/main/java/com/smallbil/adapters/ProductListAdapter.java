@@ -4,7 +4,10 @@ package com.smallbil.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.smallbil.R;
 import com.smallbil.repository.entities.Product;
@@ -12,14 +15,11 @@ import com.smallbil.repository.entities.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Product> productList = new ArrayList<>();
     private View.OnClickListener mOnItemClickListener;
+    int type;
 
     @NonNull
     @Override
@@ -27,7 +27,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = null;
 
-        switch(viewType) {
+        switch(type) {
             case 0:
                  itemView = inflater.inflate(R.layout.recyclerview_product_list_item, parent, false);
                 return  new ProductListViewHolder(itemView);
@@ -37,6 +37,10 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         return null;
 
+    }
+
+    public ProductListAdapter(int type) {
+        this.type = type;
     }
 
     @Override
@@ -97,7 +101,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void displayItem(Product product) {
-            System.out.println("SMB  sale" );
             name.setText(product.name);
             amount.setText(String.valueOf(product.amount));
             quantity.setText(String.valueOf(product.saleQuantity));
@@ -119,7 +122,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void displayItem(Product product) {
-            System.out.println("SMB  dash" );
             name.setText(product.name);
             quantity.setText(String.valueOf(product.quantity));
 

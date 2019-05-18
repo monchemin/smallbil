@@ -2,27 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/list_min_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:weightSum="100">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/product_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/text_view_style"/>
+        style="@style/text_view_style"
+        android:layout_weight="50"
+        android:gravity="start"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/product_list_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/text_view_style"/>
+        style="@style/text_view_style"
+        android:layout_weight="10"
+        android:gravity="end"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/product_list_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/text_view_style"/>
+        style="@style/text_view_style"
+        android:layout_weight="20"
+        android:gravity="end"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/product_list_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/text_view_style"/>
+        style="@style/text_view_style"
+        android:layout_weight="20"
+        android:gravity="end"/>
 
 </LinearLayout>
