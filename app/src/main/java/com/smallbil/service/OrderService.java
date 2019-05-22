@@ -2,17 +2,20 @@ package com.smallbil.service;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
+
+import androidx.lifecycle.LiveData;
 
 import com.smallbil.repository.AppDatabase;
 import com.smallbil.repository.entities.Order;
 import com.smallbil.repository.entities.OrderDetail;
 import com.smallbil.repository.entities.Product;
+import com.smallbil.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import androidx.lifecycle.LiveData;
+import java.util.Map;
 
 public class OrderService {
     AppDatabase db;
@@ -35,7 +38,8 @@ public class OrderService {
         return db.orderDao().getOrderDetails();
     }
 
-public class WriteOrder extends AsyncTask<Product, Void, Boolean> {
+
+    public class WriteOrder extends AsyncTask<Product, Void, Boolean> {
 
     private ServiceResponse response = null;
     List<Product> productList;
@@ -110,5 +114,31 @@ public class WriteOrder extends AsyncTask<Product, Void, Boolean> {
         response.didFinish(aBoolean);
     }
 }
+
+    public LiveData<List<Order>> getDayOrders(){
+        Pair<Date, Date> currentDay = DateUtils.getDay(new Date());
+        return db.orderDao().getOrders(currentDay.first, currentDay.second);
+    }
+
+    public LiveData<Double> getDayAccount(){
+        Pair<Date, Date> currentDay = DateUtils.getDay(new Date());
+        return getAmount(currentDay.first, currentDay.second);
+
+    }
+
+    public LiveData<Double> getWeekAccount() {
+        Pair<Date, Date> currentWeek = DateUtils.getWeek();
+        return getAmount(currentWeek.first, currentWeek.second);
+    }
+
+    public LiveData<Double> getMonthAccount() {
+        Pair<Date, Date> currentMonth = DateUtils.getMonth(new Date());
+        return getAmount(currentMonth.first, currentMonth.second);
+    }
+
+    private LiveData<Double> getAmount(Date start, Date end) {
+        return db.orderDao().getTotalAmount(start, end);
+    }
+
 
 }

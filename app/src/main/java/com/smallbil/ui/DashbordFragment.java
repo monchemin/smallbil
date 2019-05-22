@@ -18,13 +18,17 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.android.material.textfield.TextInputEditText;
 import com.smallbil.R;
 import com.smallbil.adapters.ProductListAdapter;
 import com.smallbil.constants.AppConstants;
 import com.smallbil.repository.AppDatabase;
+import com.smallbil.repository.entities.Order;
 import com.smallbil.repository.entities.Product;
 import com.smallbil.service.LocalStorageService;
+import com.smallbil.service.OrderService;
 import com.smallbil.service.ProductService;
+import com.smallbil.utils.DateUtils;
 import com.smallbil.utils.MyPieDataSet;
 import com.smallbil.constants.TresholdEnum;
 
@@ -33,17 +37,20 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class DashbordFragment extends BaseFragment {
     private PieChart pieChart;
-    private ProductService service;
+    private ProductService productService;
+    private OrderService orderService;
     private List<Product> thresholdProducts;
     private List<Product> redList = new ArrayList<>(), yellowList = new ArrayList<>();
     private int redThreshold, yellowThreshold;
     private ProductListAdapter adapter;
+    private TextInputEditText dayAccount, weekAccount, monthAccount;
 
     public DashbordFragment() {
         // Required empty public constructor
@@ -72,7 +79,12 @@ public class DashbordFragment extends BaseFragment {
         adapter = new ProductListAdapter(1);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        dayAccount =  view.findViewById(R.id.day_account);
+        weekAccount =  view.findViewById(R.id.week_account);
+        monthAccount =  view.findViewById(R.id.month_account);
+        dayAccount.setEnabled(false);
+        monthAccount.setEnabled(false);
+        weekAccount.setEnabled(false);
         return view;
 
     }
@@ -141,11 +153,14 @@ public class DashbordFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         getThresholdProducts();
+        getAccounts();
+       // DateUtils.getWeek();
+        //getDayOrders();
     }
 
     private void getThresholdProducts() {
         setThreshold();
-        service.getThresholdProduct(yellowThreshold).observe(this, new Observer<List<Product>>() {
+        productService.getThresholdProduct(yellowThreshold).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
                 thresholdProducts = products;
@@ -187,11 +202,43 @@ public class DashbordFragment extends BaseFragment {
 
     @Override
     void setDao(AppDatabase db) {
-        service = new ProductService(db);
+        productService = new ProductService(db);
+        orderService = new OrderService(db);
     }
 
     @Override
     void onBarCodeRead(String barCode) {
 
+    }
+    private void getAccounts(){
+        orderService.getDayAccount().observe(this, new Observer<Double>() {
+            @Override
+            public void onChanged(Double aDouble) {
+                dayAccount.setText(String.valueOf(aDouble));
+            }
+        });
+        orderService.getWeekAccount().observe(this, new Observer<Double>() {
+            @Override
+            public void onChanged(Double aDouble) {
+                weekAccount.setText(String.valueOf(aDouble));
+            }
+        });
+        orderService.getMonthAccount().observe(this, new Observer<Double>() {
+            @Override
+            public void onChanged(Double aDouble) {
+                monthAccount.setText(String.valueOf(aDouble));
+            }
+        });
+    }
+    private void getDayOrders(){
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        orderService.getDayOrders().observe(this, new Observer<List<Order>>() {
+            @Override
+            public void onChanged(List<Order> orders) {
+                for(Order or: orders) {
+                    System.out.println("SMB order " + format.format(or.orderDate));
+                }
+            }
+        });
     }
 }

@@ -223,31 +223,11 @@ public class SaleFragment extends BaseFragment {
 
     private void doSave() {
         OrderService orderService = new OrderService(db);
-        orderService.getOrders().observe(this, new Observer<List<Order>>() {
-            @Override
-            public void onChanged(List<Order> orders) {
-                Log.d("SMB", "order :" + orders.size());
-                for(Order or: orders) {
-                    Log.d("SMB", or.orderNumber + " : " + or.orderDate);
-                }
-            }
-        });
-
-        orderService.getDetails().observe(this, new Observer<List<OrderDetail>>() {
-            @Override
-            public void onChanged(List<OrderDetail> orderDetails) {
-                Log.d("SMB", "order detail :" + orderDetails.size());
-                for(OrderDetail or: orderDetails) {
-                    Log.d("SMB", or.orderNumber + " : " + or.productCode);
-                }
-            }
-        });
 
         if (productList.size() == 0) {
             Log.d("SMB", "list null");
             return;
         }
-
        OrderService.WriteOrder writeOrder = orderService.write(productList);
        writeOrder.setCallback(new ServiceResponse() {
            @Override

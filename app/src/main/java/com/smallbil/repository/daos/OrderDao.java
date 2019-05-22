@@ -3,6 +3,7 @@ package com.smallbil.repository.daos;
 import com.smallbil.repository.entities.Order;
 import com.smallbil.repository.entities.OrderDetail;
 
+import java.util.Date;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -42,5 +43,17 @@ public interface OrderDao {
 
     @Query("SELECT * FROM orderdetails")
     LiveData<List<OrderDetail>> getOrderDetails();
+
+    @Query("SELECT SUM(quantityOrdered*price) " +
+            "FROM orderdetails " +
+            "INNER JOIN orders ON orders.orderNumber = orderdetails.orderNumber " +
+            "WHERE orders.orderDate BETWEEN  :dayStart AND :dayEnd ")
+    LiveData<Double> getTotalAmount(Date dayStart, Date dayEnd);
+
+    @Query("SELECT * FROM ORDERS WHERE orderDate BETWEEN :dayStart AND :dayEnd")
+    LiveData<List<Order>> getOrders(Date dayStart, Date dayEnd);
+
+    @Query("SELECT * FROM ORDERS")
+    LiveData<List<Order>> getdayOrders();
 
 }
